@@ -4,7 +4,8 @@ defmodule AuctionWeb.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Auction.get_user(id)
-    render(conn, "show.html", user: user)
+    bids = Auction.get_bids_for_user(user)
+    render(conn, "show.html", user: user, bids: bids)
   end
 
   def new(conn, _params) do
@@ -22,7 +23,7 @@ defmodule AuctionWeb.UserController do
   defp prevent_unauthorized_access(conn, _opts) do
     current_user = Map.get(conn.assigns, :current_user)
     requested_user_id =
-      con.params
+      conn.params
       |> Map.get("id")
       |> String.to_integer()
 
@@ -30,11 +31,12 @@ defmodule AuctionWeb.UserController do
       conn
       |> put_flash(:error, "Tas atrevido, esa página no te pertenece")
       |> redirect(to: Routes.item_path(conn, :index))
-      |> healt()
+      |> halt()
     else
       conn
     end
   end
+
 
 
 end

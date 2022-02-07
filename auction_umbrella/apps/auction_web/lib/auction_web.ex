@@ -39,6 +39,7 @@ defmodule AuctionWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
+      import AuctionWeb.GlobalHelpers
     end
   end
 

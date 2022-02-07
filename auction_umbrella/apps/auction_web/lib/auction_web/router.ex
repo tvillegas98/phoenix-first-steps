@@ -15,6 +15,7 @@ defmodule AuctionWeb.Router do
     plug :accepts, ["json"]
   end
 
+
   scope "/", AuctionWeb do
     pipe_through :browser
 
@@ -28,15 +29,24 @@ defmodule AuctionWeb.Router do
     # patch "/items/:id", ItemController, :update
     # put "/items/:id", ItemController, :update
     # delete "/items/:id", ItemController, :delete
-    resources "/items", ItemController, only: [:index, :show, :new, :create, :edit, :update]
-    resources "/users", UserController, only: [:show, :new, :create]
-    get "/login", SessionController, :new
-    post "/login", SessionController, :create
-    delete "/logout", SessionController, :delete
-  end
+    resources "/items", ItemController, only: [
+      :index, :show, :new, :create, :edit, :update
+      ] do
+        resources "/bids", BidController, only: [:create]
+      end
+      resources "/users", UserController, only: [:show, :new, :create]
+      get "/login", SessionController, :new
+      post "/login", SessionController, :create
+      delete "/logout", SessionController, :delete
+    end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AuctionWeb do
+    scope "/api", AuctionWeb.Api do
+      pipe_through :api
+      resources "/items", ItemController, only: [:index, :show]
+    end
+
+    # Other scopes may use custom stacks.
+    # scope "/api", AuctionWeb do
   #   pipe_through :api
   # end
 
